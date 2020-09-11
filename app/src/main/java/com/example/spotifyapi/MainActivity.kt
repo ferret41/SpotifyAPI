@@ -3,16 +3,16 @@ package com.example.spotifyapi
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.httpPost
 import com.github.kittinunf.result.Result
-import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import com.google.gson.annotations.SerializedName
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
     lateinit var token: Token
+    lateinit var artists: Artists
 
     private val clientId: String = "613c438ba75c41c78f9147a0563d9f94"
     private val clientSecret: String =  "cc294bbdadf14934a80bfa1901c0a041"
@@ -28,8 +28,9 @@ class MainActivity : AppCompatActivity() {
         recyvlerView.adapter = ListAdapter()
 
         getClientCredential()
-    }
 
+
+    }
 
     fun getClientCredential() {
         tokenEndpoint.httpPost(
@@ -46,11 +47,37 @@ class MainActivity : AppCompatActivity() {
                         val gson = GsonBuilder().create()
                         token = gson.fromJson(result.value, Token::class.java)
                         println(token.access_token)
+
+                        getArtists("amaia")
                     }
                     is Result.Failure -> { }
                 }
             }
     }
+
+    fun getArtists(query: String) {
+        Fuel.get(apiEndpoint, listOf(Pair("q", query), Pair("type", "artist")))
+            .header(Pair("Authorization", "${token.token_type} ${token.access_token}"))
+            .responseString { request, response, result ->
+                when (result) {
+                    is Result.Success -> {
+                        println("Result.Success !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+                        val gson = GsonBuilder().create()
+                        artists = gson.fromJson(result.value, Artists::class.java)
+                        println("Succes parsed")
+
+                    }
+                    is Result.Failure -> {
+                        println("ERROR! Result.Failure")
+                    }
+                }
+            }
+    }
+
 }
 
 class Token(val access_token: String, val token_type: String)
+
+class Artists(val artists: Items)
+class Items(val items: List<Artist>)
+class Artist(val name: String, val uri: String, val href: String)
