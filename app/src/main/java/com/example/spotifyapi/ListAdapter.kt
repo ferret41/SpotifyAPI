@@ -15,11 +15,11 @@ class ListAdapter(val artists: Artists): RecyclerView.Adapter<ArtistViewHolder>(
     }
 
     override fun onBindViewHolder(holder: ArtistViewHolder, position: Int) {
-        holder.view.artistTextView.text = artists.artists.items.get(position).name
+        holder.view.artistTextView.text = artists.items.get(position).name
     }
 
     override fun getItemCount(): Int {
-        return artists.artists.items.size
+        return artists.items.size
     }
 
 

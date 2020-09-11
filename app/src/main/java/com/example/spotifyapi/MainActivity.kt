@@ -46,7 +46,7 @@ class MainActivity : AppCompatActivity() {
                         token = gson.fromJson(result.value, Token::class.java)
                         println(token.access_token)
 
-                        getArtists("amaia")
+                        getArtists("bob")
                     }
                     is Result.Failure -> { }
                 }
@@ -54,18 +54,23 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun getArtists(query: String) {
-        Fuel.get(apiEndpoint, listOf(Pair("q", query), Pair("type", "artist")))
+        Fuel.get(apiEndpoint, listOf(Pair("q", query), Pair("type", "artist"), Pair("limit", 5)))
             .header(Pair("Authorization", "${token.token_type} ${token.access_token}"))
             .responseString { request, response, result ->
                 when (result) {
                     is Result.Success -> {
                         println("Result.Success !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
                         val gson = GsonBuilder().create()
-                        val artists = gson.fromJson(result.value, Artists::class.java)
+                        val json = gson.fromJson(result.value, JSON::class.java)
+
+                        for (a in json.artists.items) {
+                            a.albums = getAlbums(a.id)
+                        }
+
                         println("Succes parsed")
 
                         runOnUiThread {
-                            recyvlerView.adapter = ListAdapter(artists)
+                            recyvlerView.adapter = ListAdapter(json.artists)
                         }
 
                     }
@@ -76,10 +81,54 @@ class MainActivity : AppCompatActivity() {
             }
     }
 
+    fun getAlbums(artistID: String) : List<Album> {
+        val albumApiEndpoint = "https://api.spotify.com/v1/artists/$artistID/albums"
+
+        val (request, response, result) = Fuel.get(albumApiEndpoint, listOf("limit" to 2))
+            .header(Pair("Authorization", "${token.token_type} ${token.access_token}"))
+            .responseString()
+        when (result) {
+            is Result.Success -> {
+                val gson = GsonBuilder().create()
+                val albums = gson.fromJson(result.value, Albums::class.java)
+                for (a in albums.items) {
+                    a.tracks = getTracks(a.id)
+                }
+                return albums.items
+            }
+            is Result.Failure -> {}
+        }
+        return emptyList<Album>()
+    }
+
+    fun getTracks(albumID: String) : List<Track> {
+        val trackApiEndpoint = "https://api.spotify.com/v1/albums/$albumID/tracks"
+
+        val (request, response, result) = Fuel.get(trackApiEndpoint, listOf("limit" to 10))
+            .header(Pair("Authorization", "${token.token_type} ${token.access_token}"))
+            .responseString()
+        when (result) {
+            is Result.Success -> {
+                val gson = GsonBuilder().create()
+                val tracks = gson.fromJson(result.value, Tracks::class.java)
+                return tracks.items
+            }
+            is Result.Failure -> {}
+        }
+        return emptyList<Track>()
+    }
+
 }
+
 
 class Token(val access_token: String, val token_type: String)
 
-class Artists(val artists: Items)
-class Items(val items: List<Artist>)
-class Artist(val name: String, val uri: String, val href: String)
+class Albums(val items: List<Album>)
+class Tracks(val items: List<Track>)
+class Track(val name: String)
+
+class JSON(val artists: Artists)
+
+class Artists(val items: List<Artist>)
+class Artist(val name: String, val id: String, val href: String, var albums: List<Album>)
+class Album(val name: String, val id: String, var tracks: List<Track>)
