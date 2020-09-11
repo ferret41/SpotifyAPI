@@ -6,9 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.artist_card.view.*
 
-class ListAdapter: RecyclerView.Adapter<ArtistViewHolder>() {
-
-    var artists = listOf("Amaia", "Bob", "Mike")
+class ListAdapter(val artists: Artists): RecyclerView.Adapter<ArtistViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ArtistViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
@@ -17,11 +15,11 @@ class ListAdapter: RecyclerView.Adapter<ArtistViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: ArtistViewHolder, position: Int) {
-        holder.view.artistTextView.text = artists.get(position)
+        holder.view.artistTextView.text = artists.artists.items.get(position).name
     }
 
     override fun getItemCount(): Int {
-        return artists.size
+        return artists.artists.items.size
     }
 
 

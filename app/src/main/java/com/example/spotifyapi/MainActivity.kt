@@ -12,7 +12,6 @@ import kotlinx.android.synthetic.main.activity_main.*
 class MainActivity : AppCompatActivity() {
 
     lateinit var token: Token
-    lateinit var artists: Artists
 
     private val clientId: String = "613c438ba75c41c78f9147a0563d9f94"
     private val clientSecret: String =  "cc294bbdadf14934a80bfa1901c0a041"
@@ -25,7 +24,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         recyvlerView.layoutManager = LinearLayoutManager(this)
-        recyvlerView.adapter = ListAdapter()
 
         getClientCredential()
 
@@ -63,8 +61,12 @@ class MainActivity : AppCompatActivity() {
                     is Result.Success -> {
                         println("Result.Success !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
                         val gson = GsonBuilder().create()
-                        artists = gson.fromJson(result.value, Artists::class.java)
+                        val artists = gson.fromJson(result.value, Artists::class.java)
                         println("Succes parsed")
+
+                        runOnUiThread {
+                            recyvlerView.adapter = ListAdapter(artists)
+                        }
 
                     }
                     is Result.Failure -> {
