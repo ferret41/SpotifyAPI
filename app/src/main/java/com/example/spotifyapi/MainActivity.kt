@@ -8,6 +8,7 @@ import com.github.kittinunf.fuel.httpPost
 import com.github.kittinunf.result.Result
 import com.google.gson.GsonBuilder
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.artist_card_old.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -23,7 +24,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        recyvlerView.layoutManager = LinearLayoutManager(this)
+        artistsRecyclerView.layoutManager = LinearLayoutManager(this)
 
         getClientCredential()
 
@@ -46,7 +47,7 @@ class MainActivity : AppCompatActivity() {
                         token = gson.fromJson(result.value, Token::class.java)
                         println(token.access_token)
 
-                        getArtists("bob")
+                        getArtists("amaia")
                     }
                     is Result.Failure -> { }
                 }
@@ -70,7 +71,7 @@ class MainActivity : AppCompatActivity() {
                         println("Succes parsed")
 
                         runOnUiThread {
-                            recyvlerView.adapter = ListAdapter(json.artists)
+                            artistsRecyclerView.adapter = ArtistAdapter(json.artists)
                         }
 
                     }
@@ -84,7 +85,7 @@ class MainActivity : AppCompatActivity() {
     fun getAlbums(artistID: String) : List<Album> {
         val albumApiEndpoint = "https://api.spotify.com/v1/artists/$artistID/albums"
 
-        val (request, response, result) = Fuel.get(albumApiEndpoint, listOf("limit" to 2))
+        val (request, response, result) = Fuel.get(albumApiEndpoint, listOf("limit" to 3))
             .header(Pair("Authorization", "${token.token_type} ${token.access_token}"))
             .responseString()
         when (result) {
