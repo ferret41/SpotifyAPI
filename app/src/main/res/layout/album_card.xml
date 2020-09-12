@@ -6,7 +6,15 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textSize="15sp"
+        android:textColor="#4A4A4A"
+        android:padding="5dp"
         android:id="@+id/albumTitle"
         android:text="TextView"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/tracksRecyclerView"/>
 
 </LinearLayout>

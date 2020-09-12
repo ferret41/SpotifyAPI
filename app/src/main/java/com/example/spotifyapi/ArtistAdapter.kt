@@ -3,10 +3,10 @@ package com.example.spotifyapi
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.artist_card_old.view.*
+import kotlinx.android.synthetic.main.artist_card.view.albumsRecyclerView
+import kotlinx.android.synthetic.main.artist_card_old.view.artistTextView
 
 class ArtistAdapter(var artists: Artists): RecyclerView.Adapter<ArtistViewHolder>() {
 
@@ -23,9 +23,9 @@ class ArtistAdapter(var artists: Artists): RecyclerView.Adapter<ArtistViewHolder
         holder.itemView.tag = position
         holder.view.artistTextView.text = artists.items.get(position).name
 
-        val childLayoutManager = LinearLayoutManager(holder.itemView.albumRecyvlerView.context, RecyclerView.VERTICAL, false)
+        val childLayoutManager = LinearLayoutManager(holder.itemView.albumsRecyclerView.context, RecyclerView.VERTICAL, false)
 
-        holder.itemView.albumRecyvlerView.apply {
+        holder.itemView.albumsRecyclerView.apply {
             layoutManager = childLayoutManager
             adapter = AlbumAdapter(artists.items.get(position).albums)
             setRecycledViewPool(viewPool)
