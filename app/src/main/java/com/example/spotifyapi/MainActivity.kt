@@ -2,6 +2,8 @@ package com.example.spotifyapi
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Menu
+import android.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.httpPost
@@ -28,6 +30,27 @@ class MainActivity : AppCompatActivity() {
         getClientCredential()
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.main, menu)
+        val searchItem = menu?.findItem(R.id.menu_search)
+        if (searchItem != null) {
+            val searchView = searchItem.actionView as SearchView
+            searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
+                override fun onQueryTextSubmit(query: String?): Boolean {
+                    getArtists("$query")
+                    return false
+                }
+
+                override fun onQueryTextChange(p0: String?): Boolean {
+                    return true
+                }
+
+            })
+        }
+
+        return super.onCreateOptionsMenu(menu)
+    }
+
     fun getClientCredential() {
         tokenEndpoint.httpPost(
             listOf(
@@ -43,8 +66,6 @@ class MainActivity : AppCompatActivity() {
                         val gson = GsonBuilder().create()
                         token = gson.fromJson(result.value, Token::class.java)
                         println(token.access_token)
-
-                        getArtists("amaia")
                     }
                     is Result.Failure -> { }
                 }
