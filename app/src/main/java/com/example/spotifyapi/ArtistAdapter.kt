@@ -5,8 +5,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.artist_card.view.albumsRecyclerView
-import kotlinx.android.synthetic.main.artist_card_old.view.artistTextView
+import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.artist_card.view.*
 
 class ArtistAdapter(var artists: Artists): RecyclerView.Adapter<ArtistViewHolder>() {
 
@@ -21,6 +21,9 @@ class ArtistAdapter(var artists: Artists): RecyclerView.Adapter<ArtistViewHolder
     override fun onBindViewHolder(holder: ArtistViewHolder, position: Int) {
 
         holder.view.artistTextView.text = artists.items.get(position).name
+
+        val artisImageView = holder.view.artistImageView
+        if (artists.items.get(position).images.size > 0) Picasso.get().load(artists.items.get(position).images.get(0).url).into(artisImageView)
 
         val childLayoutManager = LinearLayoutManager(holder.itemView.albumsRecyclerView.context, RecyclerView.VERTICAL, false)
 

@@ -8,7 +8,6 @@ import com.github.kittinunf.fuel.httpPost
 import com.github.kittinunf.result.Result
 import com.google.gson.GsonBuilder
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.artist_card_old.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -55,20 +54,17 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun getArtists(query: String) {
-        Fuel.get(apiEndpoint, listOf(Pair("q", query), Pair("type", "artist"), Pair("limit", 5)))
+        Fuel.get(apiEndpoint, listOf(Pair("q", query), Pair("type", "artist"), Pair("limit", 10)))
             .header(Pair("Authorization", "${token.token_type} ${token.access_token}"))
             .responseString { request, response, result ->
                 when (result) {
                     is Result.Success -> {
-                        println("Result.Success !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
                         val gson = GsonBuilder().create()
                         val json = gson.fromJson(result.value, JSON::class.java)
 
                         for (a in json.artists.items) {
                             a.albums = getAlbums(a.id)
                         }
-
-                        println("Succes parsed")
 
                         runOnUiThread {
                             artistsRecyclerView.adapter = ArtistAdapter(json.artists)
@@ -128,8 +124,10 @@ class Albums(val items: List<Album>)
 class Tracks(val items: List<Track>)
 class Track(val name: String)
 
+class Image(val url: String)
+
 class JSON(val artists: Artists)
 
 class Artists(val items: List<Artist>)
-class Artist(val name: String, val id: String, val href: String, var albums: List<Album>)
-class Album(val name: String, val id: String, var tracks: List<Track>)
+class Artist(val name: String, val id: String, var albums: List<Album>, val images: List<Image>)
+class Album(val name: String, val id: String, var tracks: List<Track>, val images: List<Image>)
