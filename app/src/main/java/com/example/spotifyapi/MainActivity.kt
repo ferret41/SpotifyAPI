@@ -26,8 +26,6 @@ class MainActivity : AppCompatActivity() {
         artistsRecyclerView.layoutManager = LinearLayoutManager(this)
 
         getClientCredential()
-
-
     }
 
     fun getClientCredential() {
