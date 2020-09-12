@@ -23,7 +23,7 @@ class ArtistAdapter(var artists: Artists): RecyclerView.Adapter<ArtistViewHolder
         holder.itemView.tag = position
         holder.view.artistTextView.text = artists.items.get(position).name
 
-        val childLayoutManager = LinearLayoutManager(holder.itemView.albumRecyvlerView.context, LinearLayout.VERTICAL, false)
+        val childLayoutManager = LinearLayoutManager(holder.itemView.albumRecyvlerView.context, RecyclerView.VERTICAL, false)
 
         holder.itemView.albumRecyvlerView.apply {
             layoutManager = childLayoutManager
