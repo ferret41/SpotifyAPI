@@ -1,8 +1,10 @@
 package com.example.spotifyapi
 
+import android.opengl.Visibility
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
+import android.view.View
 import android.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.kittinunf.fuel.Fuel
@@ -26,6 +28,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         artistsRecyclerView.layoutManager = LinearLayoutManager(this)
+        appInfoStatus.text = "Getting client Credentials..."
 
         getClientCredential()
     }
@@ -37,6 +40,9 @@ class MainActivity : AppCompatActivity() {
             val searchView = searchItem.actionView as SearchView
             searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
                 override fun onQueryTextSubmit(query: String?): Boolean {
+                    artistsRecyclerView.adapter = ArtistAdapter(Artists(emptyList()))
+                    appInfoStatus.text = "Loading..."
+                    appInfoStatus.visibility = View.VISIBLE
                     getArtists("$query")
                     return false
                 }
@@ -65,7 +71,10 @@ class MainActivity : AppCompatActivity() {
                     is Result.Success -> {
                         val gson = GsonBuilder().create()
                         token = gson.fromJson(result.value, Token::class.java)
-                        println(token.access_token)
+
+                        runOnUiThread{
+                            appInfoStatus.text = "Search an artist"
+                        }
                     }
                     is Result.Failure -> { }
                 }
@@ -86,7 +95,13 @@ class MainActivity : AppCompatActivity() {
                         }
 
                         runOnUiThread {
-                            artistsRecyclerView.adapter = ArtistAdapter(json.artists)
+                            if (json.artists.items.size > 0) {
+                                appInfoStatus.visibility = View.INVISIBLE
+                                artistsRecyclerView.adapter = ArtistAdapter(json.artists)
+                            }
+                            else {
+                                appInfoStatus.text = "Artist not found"
+                            }
                         }
 
                     }
