@@ -15,7 +15,14 @@ class TrackAdapter(val tracks: List<Track>) : RecyclerView.Adapter<TrackViewHold
     }
 
     override fun onBindViewHolder(holder: TrackViewHolder, position: Int) {
-        holder.view.trackTitle.text = tracks.get(position).name
+        val totalSec = tracks.get(position).duration_ms / 1000
+        val min = totalSec / 60
+        val sec =
+            if (totalSec % 60 > 10) "${(totalSec % 60).toString()}"
+            else "0${(totalSec % 60).toString()}"
+
+        val duration = tracks.get(position).duration_ms.toString()
+        holder.view.trackTitle.text = "${tracks.get(position).name} - ${min}:${sec}"
     }
 
     override fun getItemCount(): Int {

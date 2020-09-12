@@ -120,7 +120,7 @@ class Token(val access_token: String, val token_type: String)
 
 class Albums(val items: List<Album>)
 class Tracks(val items: List<Track>)
-class Track(val name: String)
+class Track(val name: String, val duration_ms: Int)
 
 class Image(val url: String)
 
