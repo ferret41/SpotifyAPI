@@ -9,6 +9,7 @@
         android:layout_height="wrap_content"
         android:textSize="13sp"
         android:textColor="#505050"
+        android:layout_margin="1dp"
         android:paddingHorizontal="5dp"
         android:id="@+id/trackTitle"
         android:text="TextView"/>
