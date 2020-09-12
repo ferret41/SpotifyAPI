@@ -20,7 +20,6 @@ class ArtistAdapter(var artists: Artists): RecyclerView.Adapter<ArtistViewHolder
 
     override fun onBindViewHolder(holder: ArtistViewHolder, position: Int) {
 
-        holder.itemView.tag = position
         holder.view.artistTextView.text = artists.items.get(position).name
 
         val childLayoutManager = LinearLayoutManager(holder.itemView.albumsRecyclerView.context, RecyclerView.VERTICAL, false)
@@ -31,7 +30,6 @@ class ArtistAdapter(var artists: Artists): RecyclerView.Adapter<ArtistViewHolder
             setRecycledViewPool(viewPool)
         }
 
-        holder.view.artistTextView.text = artists.items.get(position).name
     }
 
     override fun getItemCount(): Int {
