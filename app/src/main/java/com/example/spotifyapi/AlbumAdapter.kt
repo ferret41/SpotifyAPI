@@ -23,7 +23,7 @@ class AlbumAdapter(val albums: List<Album>) : RecyclerView.Adapter<AlbumViewHold
         holder.view.albumTitle.text = albums.get(position).name
 
         val albumImageView = holder.view.albumImageView
-        Picasso.get().load(albums.get(position).images.get(0).url).into(albumImageView)
+        Picasso.get().load(albums.get(position).images.get(2).url).into(albumImageView)
 
         val childLayoutManager = LinearLayoutManager(holder.itemView.tracksRecyclerView.context, RecyclerView.VERTICAL, false)
 
